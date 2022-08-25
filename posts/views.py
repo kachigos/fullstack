@@ -9,7 +9,13 @@ from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
+from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
+from .serializers import RegisterSerializer
+from rest_framework.permissions import AllowAny
 
+
+User = get_user_model()
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
@@ -27,6 +33,7 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
+    # permission_classes = [AllowAny]
 
 
 
@@ -36,6 +43,16 @@ class FacebookLogin(SocialLoginView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
+
+
+class RegisterAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response('Account created', 201)
 
 
 
