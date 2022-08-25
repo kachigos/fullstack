@@ -104,25 +104,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # from decouple import config
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'store',
-        'PASSWORD': '1234',
-        'USER': 'kachigos',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-# import dj_database_url
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql'
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'store',
+#         'PASSWORD': '1234',
+#         'USER': 'kachigos',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
 #     }
 # }
+import dj_database_url
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql'
+    }
+}
 
-# db = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db)
+db = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db)
 
 
 SWAGGER_SETTINGS = {
