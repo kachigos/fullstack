@@ -18,6 +18,7 @@ from rest_framework.permissions import AllowAny
 User = get_user_model()
 
 class PostList(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
     filter_backends = [
@@ -33,7 +34,7 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    # permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
 
 
