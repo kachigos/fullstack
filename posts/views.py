@@ -10,15 +10,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
-from .serializers import RegisterSerializer
-from rest_framework.permissions import AllowAny
+from rest_framework import permissions
 
 
 User = get_user_model()
 
 class PostList(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
     filter_backends = [
@@ -34,26 +31,28 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAdminUser]
 
 
 
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
+    permission_classes = [permissions.AllowAny]
 
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
+    permission_classes = [permissions.AllowAny]
 
 
-class RegisterAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response('Account created', 201)
+# class RegisterAPIView(APIView):
+#     permission_classes = [permissions.AllowAny]
+#
+#     def post(self, request):
+#         serializer = RegisterSerializer(data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response('Account created', 201)
 
 
 

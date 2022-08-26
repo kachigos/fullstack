@@ -35,6 +35,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/posts/', include('posts.urls')),
     path('api/v1/orders/', include('order.urls')),
+    path('api/v1/account/', include('account.urls')),
     path('api/v1/', include('comments.urls')),
     path('api/v1/', include('category.urls')),
     path('api/v1/api-auth/', include('rest_framework.urls')),
