@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer
 from rest_framework import permissions
-
 from drf_yasg.utils import swagger_auto_schema
 
 
@@ -24,7 +23,7 @@ class GoogleLogin(SocialLoginView):
 class RegisterAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
-    @swagger_auto_schema(query_serializer=RegisterSerializer)
+    # @swagger_auto_schema(query_serializer=RegisterSerializer)
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

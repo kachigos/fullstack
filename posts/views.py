@@ -1,9 +1,6 @@
-from rest_auth.registration.views import SocialLoginView
 from rest_framework import generics
-from .models import Post, Like, Rating
-from .serializers import PostListSerializer, PostDetailSerializer
-from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from .models import Post, Like, Rating, Favorite
+from .serializers import PostListSerializer, PostDetailSerializer,  FavoriteSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,11 +8,14 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
+from rest_framework import mixins
+from rest_framework import viewsets
+
 
 
 User = get_user_model()
 
-class PostList(generics.ListCreateAPIView):
+class PostList(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
     filter_backends = [
@@ -28,32 +28,15 @@ class PostList(generics.ListCreateAPIView):
     ordering_fields = ['title', 'id']
 
 
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+class PostDetail(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostDetailSerializer
+    permission_classes = [permissions.AllowAny]
+
+class PostCRUD(generics.CreateAPIView, generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
     permission_classes = [permissions.IsAdminUser]
-
-
-
-class FacebookLogin(SocialLoginView):
-    adapter_class = FacebookOAuth2Adapter
-    permission_classes = [permissions.AllowAny]
-
-
-class GoogleLogin(SocialLoginView):
-    adapter_class = GoogleOAuth2Adapter
-    permission_classes = [permissions.AllowAny]
-
-
-# class RegisterAPIView(APIView):
-#     permission_classes = [permissions.AllowAny]
-#
-#     def post(self, request):
-#         serializer = RegisterSerializer(data=request.data)
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response('Account created', 201)
-
 
 
 @api_view(["GET"])
@@ -88,3 +71,23 @@ def add_rating(request, p_id):
         Rating.objects.create(user=user, product=product, value=value)
 
     return Response("rating created", 201)
+
+@api_view(["GET"])
+def favorites(request, p_id):
+    user = request.user
+    product = get_object_or_404(Post, id=p_id)
+
+    if Favorite.objects.filter(user=user, product=product).exists():
+        Favorite.objects.filter(user=user, product=product).delete()
+    else:
+        Favorite.objects.create(user=user, product=product)
+    return Response("Favorite toggled", 200)
+
+
+class FavouriteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
+
+    def filter_queryset(self, queryset):
+        new_queryset = queryset.filter(user=self.request.user)
+        return new_queryset

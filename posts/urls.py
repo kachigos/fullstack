@@ -1,21 +1,17 @@
+from .views import PostList, PostDetail,PostCRUD, FavouriteViewSet, add_rating, favorites
 from django.urls import path
-from .views import PostList, PostDetail, add_rating
-from django.urls import path
-# from .views import RegisterAPIView
+from rest_framework.routers import DefaultRouter
 
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
+router = DefaultRouter()
 
+router.register("favorites", FavouriteViewSet)
 
 urlpatterns = [
-    path('<int:pk>/', PostDetail.as_view()),
+    path('detail/<int:pk>/', PostDetail.as_view()),
+    path('postCRUD/',PostCRUD.as_view()),
     path('post_list/', PostList.as_view()),
     path('add_rating/<int:p_id>/', add_rating),
-    # path('register/', RegisterAPIView.as_view()),
-    # path('api/token/', TokenObtainPairView.as_view()),
-    # path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('add_to_favorite/<int:s_id>/', favorites),
 ]
 
 

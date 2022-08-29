@@ -1,6 +1,6 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import IsAuthenticated
 from .models import Comment
 from .serializers import CommentSerializer
 
@@ -10,7 +10,7 @@ class CommentViewSet(mixins.CreateModelMixin,
                     GenericViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
 
     def get_serializer_context(self):

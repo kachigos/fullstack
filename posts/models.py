@@ -39,3 +39,10 @@ class Rating(models.Model):
 
     def __str__(self):
         return str(self.value)
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, related_name='favorites', on_delete=models.CASCADE)
+    product = models.ForeignKey(Post, related_name='favorites', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.product)

@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from posts.views import FacebookLogin, GoogleLogin
+from account.views import FacebookLogin, GoogleLogin
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from django.conf.urls.static import static
+from django.conf import settings
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,14 +33,13 @@ schema_view = get_schema_view(
 
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/posts/', include('posts.urls')),
     path('api/v1/orders/', include('order.urls')),
     path('api/v1/account/', include('account.urls')),
-    path('api/v1/', include('comments.urls')),
-    path('api/v1/', include('category.urls')),
+    path('api/v1/comments/', include('comments.urls')),
+    path('api/v1/category/', include('category.urls')),
     path('api/v1/api-auth/', include('rest_framework.urls')),
     path('api/v1/dj-rest-auth/', include('dj_rest_auth.urls')),
     # http://127.0.0.1:8000/api/v1/dj-rest-auth/login/  --> login
@@ -50,3 +52,5 @@ urlpatterns += [
     path('api/v1/dj-rest-auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
     path('api/v1/dj-rest-auth/google/', GoogleLogin.as_view(), name='google_login')
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
