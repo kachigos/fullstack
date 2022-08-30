@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from .models import Post, Like, Rating, Favorite
+from .models import Post, Rating, Favorite
 from django.contrib.auth import get_user_model
 from comments.serializers import CommentSerializer
+from django.contrib.auth.models import AnonymousUser
 
 User = get_user_model()
 
@@ -31,11 +32,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
         # if request.user.is_authenticated:
             # rep["liked_by_user"] = Like.objects.filter(user=request.user, product=instance).exists()
-        if Rating.objects.filter(user=request.user, product=instance).exists():
-            rating = Rating.objects.get(user=request.user, product=instance)
-            rep["user_rating"] = rating.value
 
-            return rep
+        if not isinstance(request.user, AnonymousUser):
+            if Rating.objects.filter(user=request.user, product=instance).exists():
+                rating = Rating.objects.get(user=request.user, product=instance)
+                rep["user_rating"] = rating.value
+
+        return rep
 
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:

@@ -28,15 +28,10 @@ class PostList(generics.ListAPIView):
     ordering_fields = ['title', 'id']
 
 
-class PostDetail(generics.ListAPIView):
+class PostDetail(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
     permission_classes = [permissions.AllowAny]
-
-class PostCRUD(generics.CreateAPIView, generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostDetailSerializer
-    permission_classes = [permissions.IsAdminUser]
 
 
 @api_view(["GET"])
@@ -49,6 +44,7 @@ def toggle_like(request, p_id):
     else:
         Like.objects.create(user=user, product=product)
     return Response("Like toggled", 200)
+
 
 
 @api_view(["POST"])
@@ -78,16 +74,16 @@ def favorites(request, p_id):
     product = get_object_or_404(Post, id=p_id)
 
     if Favorite.objects.filter(user=user, product=product).exists():
-        Favorite.objects.filter(user=user, product=product).delete()
+        Favorite.objects.get(user=user, product=product).delete()
     else:
         Favorite.objects.create(user=user, product=product)
     return Response("Favorite toggled", 200)
-
-
-class FavouriteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Favorite.objects.all()
-    serializer_class = FavoriteSerializer
-
-    def filter_queryset(self, queryset):
-        new_queryset = queryset.filter(user=self.request.user)
-        return new_queryset
+#
+#
+# class FavouriteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+#     queryset = Favorite.objects.all()
+#     serializer_class = FavoriteSerializer
+#
+#     def filter_queryset(self, queryset):
+#         new_queryset = queryset.filter(user=self.request.user)
+#         return new_queryset

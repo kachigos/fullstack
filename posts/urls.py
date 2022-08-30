@@ -1,20 +1,17 @@
-from .views import PostList, PostDetail,PostCRUD, FavouriteViewSet, add_rating, favorites
-from django.urls import path
+from .views import PostList, PostDetail,  add_rating, favorites
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register("favorites", FavouriteViewSet)
-
+# router.register("favorites", FavouriteViewSet)
+router.register('',PostDetail)
 urlpatterns = [
-    path('detail/<int:pk>/', PostDetail.as_view()),
-    path('postCRUD/',PostCRUD.as_view()),
-    path('post_list/', PostList.as_view()),
+    path('<int:pk>', PostDetail),
+    # path('list/', PostList.as_view()),
     path('add_rating/<int:p_id>/', add_rating),
-    path('add_to_favorite/<int:s_id>/', favorites),
+    path('add_to_favorite/<int:p_id>/', favorites),
+    path('', include(router.urls)),
+    # path('add_to_favorites/<int:p_id>/', favorites)
 ]
-
-
-
-
 
