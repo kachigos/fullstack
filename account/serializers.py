@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 
@@ -9,7 +10,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','username', 'password', 'password_confirm')
+        fields = ('username', 'password', 'password_confirm')
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
@@ -30,3 +31,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         print("create user with data:", validated_data)
         return User.objects.create_user(**validated_data)
 
+
+# class ChangePasswordSerializer(serializers.Serializer):
+#     model = User
+#
+#     """
+#     Serializer for password change endpoint.
+#     """
+#     old_password = serializers.CharField(required=True)
+#     new_password = serializers.CharField(required=True)
