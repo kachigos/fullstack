@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import Post, Like, Rating, Favorite
-from .serializers import PostListSerializer, PostDetailSerializer,  FavoriteSerializer
+from .serializers import PostListSerializer, PostDetailSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,7 +8,6 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework import permissions
-from rest_framework import mixins
 from rest_framework import viewsets
 
 
@@ -78,12 +77,3 @@ def favorites(request, p_id):
     else:
         Favorite.objects.create(user=user, product=product)
     return Response("Favorite toggled", 200)
-#
-#
-# class FavouriteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-#     queryset = Favorite.objects.all()
-#     serializer_class = FavoriteSerializer
-#
-#     def filter_queryset(self, queryset):
-#         new_queryset = queryset.filter(user=self.request.user)
-#         return new_queryset
