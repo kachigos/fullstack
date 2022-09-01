@@ -34,13 +34,13 @@ class RegisterAPIView(APIView):
             serializer.save()
             return Response('Account created', 201)
 
-# @api_view(["GET"])
-# def activate(request, activation_code):
-#     user = generics.get_object_or_404(User, activation_code=activation_code)
-#     user.is_active = True
-#     user.activation_code = ''
-#     user.save()
-#     return redirect("http://127.0.0.1:3000/")
+@api_view(["GET"])
+def activate(request, activation_code):
+    user = generics.get_object_or_404(User, activation_code=activation_code)
+    user.is_active = True
+    user.activation_code = ''
+    user.save()
+    return redirect("http://127.0.0.1:3000/")
 
 
 # class ChangePasswordView(generics.UpdateAPIView):
