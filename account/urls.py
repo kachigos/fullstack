@@ -12,5 +12,4 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
     # path('api/change-password/', ChangePasswordView.as_view(), name='change-password'),
-
 ]

@@ -14,4 +14,3 @@ urlpatterns = [
     path('', include(router.urls)),
     # path('add_to_favorites/<int:p_id>/', favorites)
 ]
-
